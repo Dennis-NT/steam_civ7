@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+
+# 敏感配置
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志与运行时数据
+logs/
+*.log
+
+# 原始数据（体积大或可重新获取）
+raw data/
+
+# 参考资料
+reference/
+
+# 本地数据库（可重新生成）
+database/*.db
+
+# 生成的输出文件（可重新生成）
+count_words.csv
