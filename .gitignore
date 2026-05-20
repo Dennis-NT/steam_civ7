@@ -28,8 +28,8 @@ raw data/
 # 参考资料
 reference/
 
-# 本地数据库（可重新生成）
-database/*.db
+# 本地数据库（已纳入版本控制同步）
+# database/*.db
 
 # 生成的输出文件（可重新生成）
 count_words.csv
