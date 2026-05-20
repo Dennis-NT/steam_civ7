@@ -12,6 +12,7 @@ import sqlite3
 import logging
 from collections import Counter
 from pathlib import Path
+from datetime import datetime
 
 from dotenv import load_dotenv
 
@@ -72,11 +73,14 @@ def tokenize_text(text: str, stopwords: set[str]) -> list[str]:
     return filtered
 
 
-def fetch_comments(db_path: str, table_name: str) -> list[str]:
-    """从指定表读取 comments 列内容。"""
+def fetch_comments(db_path: str, table_name: str, today_date: str) -> list[str]:
+    """从指定表读取今日 comments 列内容。"""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute(f'SELECT "comments" FROM "{table_name}"')
+    cursor.execute(
+        f'SELECT "comments" FROM "{table_name}" WHERE "publish_date" = ?',
+        (today_date,)
+    )
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -87,7 +91,9 @@ def fetch_comments(db_path: str, table_name: str) -> list[str]:
 def main() -> None:
     db_path = CFG.DB_FILE
     stopwords_path = CFG.STOPWORDS_PATH
-    output_path = os.path.join(CFG.BASE_DIR, "count_words.csv")
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    today_file_str = datetime.now().strftime('%Y%m%d')
+    output_path = os.path.join(CFG.BASE_DIR, "output", f"count_words_{today_file_str}.csv")
 
     # 自动推导评论表名（取 TABLE_NAMES 中以 _comments 结尾的第一个）
     table_candidates = [t for t in CFG.TABLE_NAMES if t.endswith("_comments")]
@@ -98,16 +104,17 @@ def main() -> None:
 
     logger.info("数据库: %s", db_path)
     logger.info("目标表: %s", table_name)
+    logger.info("日期过滤: %s", today_str)
     logger.info("停用词: %s", stopwords_path)
     logger.info("输出文件: %s", output_path)
 
     # 1. 加载停用词
     stopwords = load_stopwords(stopwords_path)
 
-    # 2. 读取评论
-    logger.info("正在读取 comments ...")
-    comments = fetch_comments(db_path, table_name)
-    logger.info("共读取 %d 条评论", len(comments))
+    # 2. 读取今日评论
+    logger.info("正在读取今日 comments ...")
+    comments = fetch_comments(db_path, table_name, today_str)
+    logger.info("共读取 %d 条今日评论", len(comments))
 
     # 3. 分词与统计
     logger.info("开始分词与词频统计 ...")

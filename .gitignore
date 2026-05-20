@@ -33,3 +33,7 @@ database/*.db
 
 # 生成的输出文件（可重新生成）
 count_words.csv
+output/
+
+# Playwright MCP 临时文件
+.playwright-mcp/
