@@ -117,7 +117,8 @@ def _to_date_str(ts: int) -> Optional[str]:
     try:
         if ts == 0:
             return None
-        return datetime.datetime.fromtimestamp(int(ts), datetime.timezone.utc).strftime("%Y-%m-%d")
+        tz_utc8 = datetime.timezone(datetime.timedelta(hours=8))
+        return datetime.datetime.fromtimestamp(int(ts), tz_utc8).strftime("%Y-%m-%d %H:%M:%S")
     except Exception:
         return None
 
