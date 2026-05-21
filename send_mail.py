@@ -98,8 +98,9 @@ def send_email(config, subject, body, to_addrs, attachments=None):
 
 
 def main():
-    today = datetime.now().strftime("%Y%m%d")
-    today_cn = datetime.now().strftime("%Y年%m月%d日")
+    now = datetime.now()
+    today = now.strftime("%Y%m%d")
+    today_cn = now.strftime("%Y年%m月%d日")
 
     comments_file = os.path.join("output", f"comments_{today}.csv")
     count_words_file = os.path.join("output", f"count_words_{today}.csv")

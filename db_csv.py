@@ -20,7 +20,7 @@ def export_comments() -> str:
     range_start = today_15 - timedelta(days=1)
     range_end = today_15
 
-    file_tag = range_start.strftime("%Y%m%d")
+    file_tag = now.strftime("%Y%m%d")
     range_start_str = range_start.strftime("%Y-%m-%d %H:%M:%S")
     range_end_str = range_end.strftime("%Y-%m-%d %H:%M:%S")
 

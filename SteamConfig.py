@@ -30,7 +30,7 @@ class SteamConfig:
         self.LOGO_IMAGE: str = f"pictures/{self.KEYWORD}.png"
         self.LOGO_ALT: str = self.KEYWORD
         self.APP_ID: int = 1295660
-        self.STOP_DATE_STR: Optional[str] = (datetime.now() - timedelta(days=8)).strftime('%Y-%m-%d')  # 动态设置为昨天
+        self.STOP_DATE_STR: Optional[str] = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')  # 动态设置为昨天
         
         # App/Web Configuration
         self.DATA_SOURCE_TYPE: str = "json"  # json, api, generated

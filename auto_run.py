@@ -28,7 +28,15 @@ def run_script(script_path: Path) -> bool:
     result = subprocess.run(
         [sys.executable, str(script_path)],
         cwd=script_path.parent,
+        capture_output=True,
+        text=True,
     )
+
+    # 始终打印子进程的 stdout/stderr，方便排查
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr)
 
     if result.returncode == 0:
         print(f"[成功] {script_path.name}")

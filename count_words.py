@@ -99,8 +99,10 @@ def main() -> None:
 
     range_start_str = range_start.strftime('%Y-%m-%d %H:%M:%S')
     range_end_str = range_end.strftime('%Y-%m-%d %H:%M:%S')
-    file_tag = range_start.strftime('%Y%m%d')
-    output_path = os.path.join(CFG.BASE_DIR, "output", f"count_words_{file_tag}.csv")
+    file_tag = now.strftime('%Y%m%d')
+    output_dir = os.path.join(CFG.BASE_DIR, "output")
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, f"count_words_{file_tag}.csv")
 
     # 自动推导评论表名（取 TABLE_NAMES 中以 _comments 结尾的第一个）
     table_candidates = [t for t in CFG.TABLE_NAMES if t.endswith("_comments")]
