@@ -168,6 +168,11 @@ def _transform_review(app_id: int, item: Dict[str, Any]) -> Dict[str, Any]:
     like = item.get("votes_up")
     # if like is None, it remains None
     
+    # 构造评论 URL
+    url = None
+    if user_id:
+        url = f"https://steamcommunity.com/profiles/{user_id}/recommended/{app_id}/"
+
     return {
         "platform": "steam",
         "oid": int(app_id),
@@ -177,6 +182,7 @@ def _transform_review(app_id: int, item: Dict[str, Any]) -> Dict[str, Any]:
         "publish_date": publish_date,
         "unique_id": unique_id,
         "metadata": json.dumps(metadata_dict, ensure_ascii=False),
+        "url": url,
     }
 
 
@@ -219,9 +225,9 @@ class DatabaseManager:
             return
 
         sql = f'''
-            INSERT INTO "{self.table_name}" 
-            ("platform", "user", "comments", "like", "publish_date", "oid", "unique_id", "metadata")
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO "{self.table_name}"
+            ("platform", "user", "comments", "like", "publish_date", "oid", "unique_id", "metadata", "url")
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT("unique_id") DO UPDATE SET
             "like"=MAX(IFNULL("like",0), excluded."like"),
             "publish_date"=CASE WHEN ("publish_date" IS NULL OR "publish_date"="") THEN excluded."publish_date" ELSE "publish_date" END,
@@ -229,9 +235,10 @@ class DatabaseManager:
             "comments"=CASE WHEN ("comments" IS NULL OR "comments"="") THEN excluded."comments" ELSE "comments" END,
             "oid"=CASE WHEN ("oid" IS NULL) THEN excluded."oid" ELSE "oid" END,
             "platform"=CASE WHEN ("platform" IS NULL OR "platform"="") THEN excluded."platform" ELSE "platform" END,
-            "metadata"=CASE WHEN ("metadata" IS NULL OR "metadata"="") THEN excluded."metadata" ELSE "metadata" END
+            "metadata"=CASE WHEN ("metadata" IS NULL OR "metadata"="") THEN excluded."metadata" ELSE "metadata" END,
+            "url"=CASE WHEN ("url" IS NULL OR "url"="") THEN excluded."url" ELSE "url" END
         '''
-        
+
         data_to_insert = []
         for item in self.buffer:
             data_to_insert.append((
@@ -242,7 +249,8 @@ class DatabaseManager:
                 item["publish_date"],
                 item["oid"],
                 item["unique_id"],
-                item["metadata"]
+                item["metadata"],
+                item.get("url")
             ))
         
         try:

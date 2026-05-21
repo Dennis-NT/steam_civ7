@@ -126,6 +126,7 @@ class SteamConfig:
             '"oid" INTEGER',
             '"unique_id" TEXT UNIQUE',
             '"metadata" TEXT',
+            '"url" TEXT',
         ]
         self.VIDEOS_COLUMNS: list[str] = [
             '"platform" TEXT',
